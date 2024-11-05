@@ -1,7 +1,7 @@
 'use client'
 import { useState } from "react";
 import { Modal, Box, Button, Typography, Snackbar, Slide } from '@mui/material';
-import ThumbsUp from "../../../../../trivia/public/thumbs.gif"
+
 import Image from "next/image";
 const initialQuestions = [
     {
@@ -233,7 +233,7 @@ export default function Question() {
       {quizEnded ? (
         <div>
             <Box display={"flex"} justifyContent={"center"}>
-                <Image src={ThumbsUp} width={70} height={"70"} alt="thumbs up" style={{borderRadius:"100px"}}/>
+                <Image src={"/thumbs.gif"} width={70} height={"70"} alt="thumbs up" style={{borderRadius:"100px"}}/>
                 </Box>   
           <Typography textAlign={"center"} fontSize={50} fontWeight={"700"} color="white">Thanks for playing!</Typography>
           <Typography textAlign={"center"} fontSize={30} fontWeight={"700"} color="white" >Your score: {score} / {questions.length}</Typography >
