@@ -238,6 +238,7 @@ export default function Question() {
               </li>
             ))}
           </ul>
+          <p style={{display:"none"}}>{isCorrect}</p>
           <Button
             variant="contained"
             color="primary"
