@@ -1,6 +1,8 @@
 'use client'
 import { useState } from "react";
-import { Modal, Box, Button, Typography } from '@mui/material';
+import { Modal, Box, Button, Typography, Snackbar } from '@mui/material';
+import ThumbsUp from "../../../../../trivia/public/thumbs.gif"
+import Image from "next/image";
 const initialQuestions = [
     {
       question: "Who played at His Majesty’s The King’s Coronation in 2023?",
@@ -152,6 +154,11 @@ export default function Question() {
     const [showModal, setShowModal] = useState(false);
     const [score, setScore] = useState(0);
     const [quizEnded, setQuizEnded] = useState(false);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+ 
+    const [isSubmitted, setIsSubmitted] = useState(false);
   
   const currentQuestion = questions[currentQuestionIndex];
 
@@ -160,20 +167,34 @@ export default function Question() {
   };
 
   const handleSubmitAnswer = () => {
+    if (selectedAnswer === null) return; // Prevent submission if no answer is selected
+    
     const isAnswerCorrect = selectedAnswer === currentQuestion.correctAnswerId;
     setIsCorrect(isAnswerCorrect);
-
+    
+    // Update score if the answer is correct
     if (isAnswerCorrect) {
-      setScore(score + 1);
-      setShowModal(true); // Show modal for correct answer
-    } else {
-      goToNextQuestion();
-    }
+        setScore((prevScore) => prevScore + 1);
+        setSnackbarMessage("Correct!");
+        setSnackbarSeverity("success");
+      } else {
+        setSnackbarMessage("Wrong answer!");
+        setSnackbarSeverity("error");
+      }
+      setSnackbarOpen(true);
+    setIsSubmitted(true);
+    // Show the modal for both correct and incorrect answers
+    setShowModal(true);
+  }
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   const goToNextQuestion = () => {
+   
     setShowModal(false);
     setSelectedAnswer(null);
+    setIsSubmitted(false);
 
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -211,34 +232,58 @@ export default function Question() {
             <div>
       {quizEnded ? (
         <div>
-          <Typography textAlign={"center"} fontSize={20} fontWeight={"700"} color="white">Congratulations Quiz Completed!</Typography>
+            <Box display={"flex"} justifyContent={"center"}>
+                <Image src={ThumbsUp} width={70} height={"70"} alt="thumbs up" style={{borderRadius:"100px"}}/>
+                </Box>   
+          <Typography textAlign={"center"} fontSize={50} fontWeight={"700"} color="white">Thanks for playing!</Typography>
           <Typography textAlign={"center"} fontSize={30} fontWeight={"700"} color="white" >Your score: {score} / {questions.length}</Typography >
+         
+                <Typography  textAlign={"center"} color="white"> #JollofandTea</Typography>
+              
           <Box display={"flex"} justifyContent={"center"}>
           <Button variant="contained" onClick={handleRestartQuiz}>
             Start Again
           </Button>
           </Box>
+       
           
         </div>
       ) : (
         <div>
-          <Typography fontSize={50} fontWeight={"700"} color="white">{currentQuestion.question}</Typography>
-          <ul style={{ listStyleType: "none", padding: 0 }}>
-            {currentQuestion.options.map(option => (
+        <Typography fontSize={40} fontWeight={"700"} color="white">{currentQuestion.question}</Typography>
+        <ul style={{ listStyleType: "none", padding: 0 }}>
+          {currentQuestion.options.map(option => {
+       let optionStyle = { fontSize: "30px", fontWeight: "500", color: "white" };
+
+       if (isSubmitted) {
+           // Change color based on selection after submission
+           if (selectedAnswer === option.id) {
+               optionStyle = selectedAnswer === currentQuestion.correctAnswerId
+                   ? { ...optionStyle, color: "green" } // Correct answer
+                   : { ...optionStyle, color: "red" }; // Wrong answer
+           } else if (option.id === currentQuestion.correctAnswerId) {
+               optionStyle = { ...optionStyle, color: "green" }; // Highlight correct answer if not selected
+           }
+       }
+      
+            return (
               <li key={option.id}>
-                <label style={{fontSize:"30px", fontWeight:"500", color:"white"}}>
+                <label style={optionStyle}  >
                   <input
                     type="checkbox"
                     checked={selectedAnswer === option.id}
-                    onChange={() => handleAnswerSelect(option.id)}
+                    onChange={() =>{
+                        handleAnswerSelect(option.id)
+                       
+                    } }
                   />
-                  
                   {`${option.indicate}. ${option.text}`}
                 </label>
               </li>
-            ))}
-          </ul>
-          <p style={{display:"none"}}>{isCorrect}</p>
+            );
+          })}
+        </ul>
+        <Box display={"flex"} gap={2}>
           <Button
             variant="contained"
             color="primary"
@@ -247,17 +292,54 @@ export default function Question() {
           >
             Submit Answer
           </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={goToNextQuestion}
+          >
+            Next
+          </Button>
+        </Box>
 
-          {/* Modal for correct answer */}
-          <Modal open={showModal} onClose={handleCloseModal}>
-            <Box sx={{ padding: 2, bgcolor: "background.paper", margin: "auto", maxWidth: 400 }}>
-                <Typography fontSize={30} fontWeight={600}>Did You Know?</Typography>
-              <h4>Correct Answer Explanation</h4>
-              <p dangerouslySetInnerHTML={{ __html: currentQuestion.description }} />
-              <Button onClick={handleCloseModal} variant="contained">Next Question</Button>
-            </Box>
-          </Modal>
-        </div>
+        {/* Modal for answer explanation */}
+        <Modal open={showModal} onClose={handleCloseModal}>
+          <Box sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
+          }}>
+             <Snackbar
+                open={snackbarOpen}
+                onClose={handleSnackbarClose}
+                message={snackbarMessage}
+                autoHideDuration={3000}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                sx={{
+                  bgcolor: snackbarSeverity === "success" ? "green" : "red",
+                  zIndex: 1400, 
+                  borderRadius:4,
+                  display:"flex",
+                  justifyContent:"center",
+                  alignItems:"center",
+                 color:"white"
+                }}
+              />
+
+            <Typography mt={4} fontSize={30} fontWeight={600}>Did You Know?</Typography>
+            <h4>{isCorrect ? "Correct Answer Explanation" : "Wrong Answer Explanation"}</h4>
+            <p dangerouslySetInnerHTML={{ __html: currentQuestion.description }} />
+            <Button onClick={handleCloseModal} variant="contained">Next Question</Button>
+          </Box>
+        </Modal>
+
+       
+      </div>
       )}
     </div>
         </Box>
