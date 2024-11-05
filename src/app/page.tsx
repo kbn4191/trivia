@@ -7,7 +7,7 @@ export default function Home() {
  <Box className="homepage">
   <Box position={"relative"} height={"100vh"} display={"flex"} justifyContent={"center"}>
     <Box  position={"absolute"} bottom={40} width={"100%"} display={"flex"} justifyContent={"center"}>
-      <Link href={"/page/question"}>
+      <Link href={"/page/question"} style={{width:"100%", display:"flex", justifyContent:"center"}}>
       <Button style={{
         width:"20%",
         height:"50px",
