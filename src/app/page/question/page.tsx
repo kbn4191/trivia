@@ -222,8 +222,8 @@ export default function Question() {
       alignItems={"center"}>
       <Box
        bgcolor={"rgba(0, 0, 0, 0.62)"}
-        width={"70%"}
-        height={"70%"}
+        width={{md:"70%", xs:"95"}}
+        height={{md:"70%", xs:"95"}}
         p={"50px"}
         display={"flex"}
         justifyContent={"center"}
@@ -235,8 +235,8 @@ export default function Question() {
             <Box display={"flex"} justifyContent={"center"}>
                 <Image src={"/thumbs.gif"} width={70} height={"70"} alt="thumbs up" style={{borderRadius:"100px"}}/>
                 </Box>   
-          <Typography textAlign={"center"} fontSize={50} fontWeight={"700"} color="white">Thanks for playing!</Typography>
-          <Typography textAlign={"center"} fontSize={30} fontWeight={"700"} color="white" >Your score: {score} / {questions.length}</Typography >
+          <Typography textAlign={"center"} fontSize={{md:50, xs:30}} fontWeight={"700"} color="white">Thanks for playing!</Typography>
+          <Typography textAlign={"center"} fontSize={{md:30, xs:20}} fontWeight={"700"} color="white" >Your score: {score} / {questions.length}</Typography >
          
                 <Typography  textAlign={"center"} color="white"> #JollofandTea</Typography>
               
@@ -250,10 +250,10 @@ export default function Question() {
         </div>
       ) : (
         <div>
-        <Typography fontSize={40} fontWeight={"700"} color="white">{currentQuestion.question}</Typography>
+        <Typography fontSize={{md:40, sx:16}} fontWeight={"700"} color="white">{currentQuestion.question}</Typography>
         <ul style={{ listStyleType: "none", padding: 0 }}>
           {currentQuestion.options.map(option => {
-       let optionStyle = { fontSize: "30px", fontWeight: "500", color: "white" };
+       let optionStyle = { fontWeight: "500", color: "white" };
 
        if (isSubmitted) {
            // Change color based on selection after submission
@@ -268,7 +268,7 @@ export default function Question() {
       
             return (
               <li key={option.id}>
-                <label style={optionStyle}  >
+                <Box mt={{md:0, xs:2}}  fontSize={{md:30, xs:"16px"}} style={optionStyle}  >
                   <input
                     type="checkbox"
                     checked={selectedAnswer === option.id}
@@ -278,12 +278,12 @@ export default function Question() {
                     } }
                   />
                   {`${option.indicate}. ${option.text}`}
-                </label>
+                </Box>
               </li>
             );
           })}
         </ul>
-        <Box display={"flex"} gap={2}>
+        <Box display={"flex"} gap={2} mt={2}>
           <Button
             variant="contained"
             color="primary"
@@ -303,7 +303,7 @@ export default function Question() {
 
         {/* Modal for answer explanation */}
         <Modal open={showModal} onClose={handleCloseModal}>
-            <div>
+            <Box width={"10%"} px={2}>
                
        < Snackbar
         TransitionComponent={(props) => <Slide {...props} direction="down" />}
@@ -323,15 +323,15 @@ export default function Question() {
         }
       }}
     />
-          <Box sx={{
+          <Box width={{md:500, xs:"100%"}}   p={{md:4, xs:4}} sx={{
             position: 'absolute',
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 400,
+           
             bgcolor: 'background.paper',
             boxShadow: 24,
-            p: 4,
+           
             borderRadius: 2,
           }}>
             
@@ -341,7 +341,7 @@ export default function Question() {
             <p dangerouslySetInnerHTML={{ __html: currentQuestion.description }} />
             <Button onClick={handleCloseModal} variant="contained">Next Question</Button>
           </Box>
-          </div>
+          </Box>
         </Modal>
 
        
