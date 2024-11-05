@@ -13,9 +13,19 @@
     --foreground: #ededed;
   }
 }
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.homepage{
+  width: 100vw;
+  height: 100vh;
+  background-image: url("../../../trivia/public/homebg.png");
+  background-size: 100% 100%;
 }
+
+.question{
+  width: 100vw;
+  height: 100vh;
+  background-image: url("../../../trivia/public/blue.jpg");
+  background-size: 100% 100%;
+
+
+}
+
