@@ -1,6 +1,6 @@
 'use client'
 import { useState } from "react";
-import { Modal, Box, Button, Typography, Snackbar } from '@mui/material';
+import { Modal, Box, Button, Typography, Snackbar, Slide } from '@mui/material';
 import ThumbsUp from "../../../../../trivia/public/thumbs.gif"
 import Image from "next/image";
 const initialQuestions = [
@@ -303,6 +303,26 @@ export default function Question() {
 
         {/* Modal for answer explanation */}
         <Modal open={showModal} onClose={handleCloseModal}>
+            <div>
+               
+       < Snackbar
+        TransitionComponent={(props) => <Slide {...props} direction="down" />}
+      open={snackbarOpen}
+      onClose={handleSnackbarClose}
+      message={snackbarMessage}
+      autoHideDuration={3000}
+      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      ContentProps={{
+        sx: {
+          backgroundColor: snackbarSeverity === "success" ? "green" : "red",
+          color: "white",
+          borderRadius: 4,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        }
+      }}
+    />
           <Box sx={{
             position: 'absolute',
             top: '50%',
@@ -314,28 +334,14 @@ export default function Question() {
             p: 4,
             borderRadius: 2,
           }}>
-             <Snackbar
-                open={snackbarOpen}
-                onClose={handleSnackbarClose}
-                message={snackbarMessage}
-                autoHideDuration={3000}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                sx={{
-                  bgcolor: snackbarSeverity === "success" ? "green" : "red",
-                  zIndex: 1400, 
-                  borderRadius:4,
-                  display:"flex",
-                  justifyContent:"center",
-                  alignItems:"center",
-                 color:"white"
-                }}
-              />
+            
 
-            <Typography mt={4} fontSize={30} fontWeight={600}>Did You Know?</Typography>
+            <Typography  fontSize={30} fontWeight={600}>Did You Know?</Typography>
             <h4>{isCorrect ? "Correct Answer Explanation" : "Wrong Answer Explanation"}</h4>
             <p dangerouslySetInnerHTML={{ __html: currentQuestion.description }} />
             <Button onClick={handleCloseModal} variant="contained">Next Question</Button>
           </Box>
+          </div>
         </Modal>
 
        
